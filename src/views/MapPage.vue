@@ -44,7 +44,7 @@ const umapUrl = 'https://umap.openstreetmap.fr/fr/map/ecof-france_1159509?scaleC
 <style scoped>
 .map-container {
   width: 100%;
-  height: calc(100vh - 150px);
+  height: calc(100vh - 200px);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -53,7 +53,7 @@ const umapUrl = 'https://umap.openstreetmap.fr/fr/map/ecof-france_1159509?scaleC
 /* Pour rendre responsive */
 @media (max-width: 768px) {
   .map-container {
-    height: calc(100vh - 150px)
+    height: calc(100vh - 200px)
   }
 }
 </style>
