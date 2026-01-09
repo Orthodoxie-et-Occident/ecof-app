@@ -50,7 +50,7 @@
   </ion-app>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { 
   IonApp, 
   IonRouterOutlet,
@@ -78,7 +78,7 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const navigateTo = async (routePath: string) => {
+const navigateTo = async (routePath) => {
   await menuController.close();
   router.push(`/${routePath}`);
 };

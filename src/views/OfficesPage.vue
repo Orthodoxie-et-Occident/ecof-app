@@ -223,7 +223,7 @@
     </ion-page>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { useRouter } from 'vue-router';
 import {
     IonPage,
@@ -244,7 +244,7 @@ import { chevronForward } from 'ionicons/icons';
 
 const router = useRouter();
 
-const voirHoraires = (paroisse_id: number) => {
+const voirHoraires = (paroisse_id) => {
     router.push(`/paroisses/${paroisse_id}/horaires`);
 };
 </script>

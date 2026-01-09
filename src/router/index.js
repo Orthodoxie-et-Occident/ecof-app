@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "@ionic/vue-router";
-import { RouteRecordRaw } from "vue-router";
 import AboutPage from "../views/AboutPage.vue";
 import CalendarPage from "../views/CalendarPage.vue";
 import HomePage from "../views/HomePage.vue";
@@ -8,7 +7,7 @@ import OfficesPage from "../views/OfficesPage.vue";
 import PrayersPage from "../views/PrayersPage.vue";
 import SynaxarPage from "../views/SynaxarPage.vue";
 
-const routes: Array<RouteRecordRaw> = [
+const routes = [
   {
     path: "/",
     redirect: "/home",
