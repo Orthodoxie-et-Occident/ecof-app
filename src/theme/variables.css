@@ -1,6 +1,8 @@
 :root {
     --ion-font-family: 'muli', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
 
+    --ion-background-color: #EDE8DF;
+
     --ion-color-primary: #B3995B;
     --ion-color-primary-rgb: 179, 153, 91;
     --ion-color-primary-contrast: #000000;
