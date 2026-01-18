@@ -254,6 +254,10 @@ ion-list-header {
     padding-top: 20px;
 }
 
+ion-thumbnail img {
+    border-radius: 3px;
+}
+
 ion-list-header h2 {
     font-weight: 600;
     color: var(--ion-color-primary);
