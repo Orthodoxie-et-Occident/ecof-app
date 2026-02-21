@@ -10,30 +10,24 @@
     </ion-header>
 
     <ion-content class="ion-padding">
-      <!-- Search bar -->
       <ion-searchbar
         v-model="searchTerm"
         placeholder="Recherche"
         @ionInput="handleSearch"
       ></ion-searchbar>
 
-      <!-- Loading indicator -->
       <div v-if="loading" class="ion-text-center ion-margin">
         <ion-spinner></ion-spinner>
         <p>Chargement des saints...</p>
       </div>
 
-      <!-- Error message -->
       <ion-card v-if="error" color="danger">
-        <ion-card-content>
-          {{ error }}
-        </ion-card-content>
+        <ion-card-content>{{ error }}</ion-card-content>
       </ion-card>
 
-      <!-- List of saints -->
       <ion-list v-if="!loading && !error">
         <ion-item
-          v-for="(item, index) in filteredSaints"
+          v-for="(item, index) in visibleSaints"
           :key="index"
           button
           detail
@@ -44,12 +38,20 @@
           </ion-label>
         </ion-item>
       </ion-list>
+
+      <!-- Infinite scroll uniquement si pas de recherche active -->
+      <ion-infinite-scroll v-if="!searchTerm" :disabled="allLoaded" @ionInfinite="loadMore">
+        <ion-infinite-scroll-content
+          loading-spinner="crescent"
+          loading-text="Chargement..."
+        ></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import {
   IonPage,
@@ -66,36 +68,32 @@ import {
   IonSpinner,
   IonCard,
   IonCardContent,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
 } from "@ionic/vue";
+
+const PAGE_SIZE = 40;
 
 const router = useRouter();
 const saints = ref([]);
 const loading = ref(false);
 const error = ref(null);
 const searchTerm = ref("");
+const page = ref(1);
 
-// Fonction pour supprimer les accents
-const removeAccents = (str) => {
-  return str
+const removeAccents = (str) =>
+  str
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
-};
 
-// Récupération des données
 const fetchSaints = async () => {
   loading.value = true;
   error.value = null;
-
   try {
     const response = await fetch("https://ecof-api-production.up.railway.app/api/synaxar");
-
-    if (!response.ok) {
-      throw new Error("Erreur lors du chargement des données");
-    }
-
-    const data = await response.json();
-    saints.value = data;
+    if (!response.ok) throw new Error("Erreur lors du chargement des données");
+    saints.value = await response.json();
   } catch (err) {
     error.value = err.message;
     console.error("Erreur:", err);
@@ -104,31 +102,42 @@ const fetchSaints = async () => {
   }
 };
 
-// Filtrage des saints (insensible aux accents)
+// Recherche inchangée
 const filteredSaints = computed(() => {
-  if (!searchTerm.value) {
-    return saints.value;
-  }
-
+  if (!searchTerm.value) return saints.value;
   const normalizedSearch = removeAccents(searchTerm.value);
-
   return saints.value.filter((item) => removeAccents(item.saint).includes(normalizedSearch));
 });
 
-// Gestion de la recherche
+// Si recherche active → tout afficher, sinon paginer
+const visibleSaints = computed(() => {
+  if (searchTerm.value) return filteredSaints.value;
+  return filteredSaints.value.slice(0, page.value * PAGE_SIZE);
+});
+
+const allLoaded = computed(() => visibleSaints.value.length >= saints.value.length);
+
+// Reset page quand on efface la recherche
+watch(searchTerm, () => {
+  page.value = 1;
+});
+
 const handleSearch = (event) => {
   searchTerm.value = event.target.value;
 };
 
-// Afficher les détails d'un saint (à personnaliser)
+const loadMore = (event) => {
+  setTimeout(() => {
+    page.value++;
+    event.target.complete();
+  }, 100);
+};
+
 const showSaintDetail = (item) => {
   router.push(`/saint/${item.vies_id}`);
 };
 
-// Chargement au montage du composant
-onMounted(() => {
-  fetchSaints();
-});
+onMounted(fetchSaints);
 </script>
 
 <style scoped>
