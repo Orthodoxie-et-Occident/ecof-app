@@ -21,8 +21,8 @@
     "@capacitor/ios": "^8.1.0",
     "@capacitor/keyboard": "8.0.1",
     "@capacitor/status-bar": "8.0.1",
-    "@ionic/vue": "^8.7.18",
-    "@ionic/vue-router": "^8.7.18",
+    "@ionic/vue": "^8.8.0",
+    "@ionic/vue-router": "^8.8.0",
     "ionicons": "^8.0.13",
     "vue": "^3.5.29",
     "vue-router": "^5.0.3"
@@ -34,8 +34,8 @@
     "@vitejs/plugin-vue": "^6.0.4",
     "@vue/test-utils": "^2.4.6",
     "jsdom": "^28.1.0",
-    "oxfmt": "^0.35.0",
-    "oxlint": "^1.50.0",
+    "oxfmt": "^0.36.0",
+    "oxlint": "^1.51.0",
     "terser": "^5.46.0",
     "vite": "^7.3.1",
     "vitest": "^4.0.18"

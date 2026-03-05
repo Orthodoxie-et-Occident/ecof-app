@@ -22,14 +22,14 @@
       </ion-card>
 
       <ion-list v-if="!loading && !error">
-        <ion-item v-for="item in visibleSaints" :key="item.vies_id" button detail @click="showSaintDetail(item)">
+        <ion-item v-for="(item, index) in visibleSaints" :key="index" button detail @click="showSaintDetail(item)">
           <ion-label>
             <h2>{{ item.saint }}</h2>
           </ion-label>
         </ion-item>
       </ion-list>
 
-      <ion-infinite-scroll :disabled="allLoaded" @ionInfinite="loadMore">
+      <ion-infinite-scroll ref="infiniteScrollRef" :disabled="allLoaded" @ionInfinite="loadMore">
         <ion-infinite-scroll-content loading-spinner="crescent" loading-text="Chargement..."></ion-infinite-scroll-content>
       </ion-infinite-scroll>
     </ion-content>
@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from "vue"
+import { ref, onMounted, computed, watch, nextTick } from "vue"
 import { useRouter } from "vue-router"
 import {
   IonPage,
@@ -60,9 +60,9 @@ import {
 
 const PAGE_SIZE = 40
 const router = useRouter()
+const infiniteScrollRef = ref(null)
 
-const saints = ref([]) // données brutes
-const normalizedSaints = ref([]) // cache des noms normalisés
+const saints = ref([])
 const loading = ref(false)
 const error = ref(null)
 const searchTerm = ref("")
@@ -80,10 +80,12 @@ const fetchSaints = async () => {
   try {
     const response = await fetch("https://ecof-api-production.up.railway.app/api/synaxar")
     if (!response.ok) throw new Error("Erreur lors du chargement des données")
-    saints.value = await response.json()
+    const data = await response.json()
 
-    // 🔑 Pré-calcul unique des noms normalisés → zéro recalcul pendant la recherche
-    normalizedSaints.value = saints.value.map((item) => removeAccents(item.saint))
+    saints.value = data.map((item) => ({
+      ...item,
+      _normalized: item.saint ? removeAccents(item.saint) : "",
+    }))
   } catch (err) {
     error.value = err.message
   } finally {
@@ -91,26 +93,32 @@ const fetchSaints = async () => {
   }
 }
 
-// Filtrage sur le cache pré-calculé
 const filteredSaints = computed(() => {
-  if (!searchTerm.value) return saints.value
+  if (!searchTerm.value.trim()) return saints.value
   const q = removeAccents(searchTerm.value)
-  return saints.value.filter((_, i) => normalizedSaints.value[i].includes(q))
+  // ✅ Fix 4 : filtre direct sur la propriété de l'objet, zéro risque d'index croisé
+  return saints.value.filter((item) => item._normalized.includes(q))
 })
 
-// 🔑 Pagination AUSSI en mode recherche → jamais plus de PAGE_SIZE éléments dans le DOM
 const visibleSaints = computed(() => filteredSaints.value.slice(0, page.value * PAGE_SIZE))
 
-const allLoaded = computed(() => visibleSaints.value.length >= filteredSaints.value.length)
+const allLoaded = computed(() => filteredSaints.value.length === 0 || visibleSaints.value.length >= filteredSaints.value.length)
 
-// Reset page à chaque nouvelle recherche
-watch(searchTerm, () => {
-  page.value = 1
-})
+watch(
+  searchTerm,
+  async () => {
+    page.value = 1
+    await nextTick()
+    if (infiniteScrollRef.value?.$el) {
+      infiniteScrollRef.value.$el.disabled = false
+    }
+  },
+  { flush: "sync" },
+)
 
-const loadMore = (event) => {
+const loadMore = async (event) => {
   page.value++
-  event.target.complete()
+  await event.target.complete()
 }
 
 const showSaintDetail = (item) => {
