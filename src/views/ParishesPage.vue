@@ -38,7 +38,7 @@ import { useRouter } from "vue-router"
 import { IonPage, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonContent, IonList, IonListHeader, IonItem, IonThumbnail, IonLabel, IonIcon } from "@ionic/vue"
 import { chevronForward } from "ionicons/icons"
 
-import bordeauxImg from "@/assets/img/parishes/Bordeaux.webp"
+import bordeauxImg from "@/assets/img/parishes/bordeaux.png"
 import montpellierImg from "@/assets/img/parishes/montpellier.png"
 import amboiseImg from "@/assets/img/parishes/amboise.png"
 import grenobleImg from "@/assets/img/parishes/grenoble.png"
