@@ -86,7 +86,11 @@ import { useRouter } from "vue-router"
 
 const router = useRouter()
 const modal = ref()
-const selectedDate = ref(new Date().toISOString())
+const toLocalISO = () => {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}T00:00:00`
+}
+const selectedDate = ref(toLocalISO())
 const calendarData = ref(null)
 const loading = ref(false)
 const error = ref(null)
@@ -130,9 +134,9 @@ const fetchCalendarData = async () => {
 
 const navigateToSaint = (id) => router.push(`/saint/${id}`)
 const navigateToReading = (id) => router.push(`/reading/${id}`)
-
 const handleDateChange = (event) => {
-  selectedDate.value = event.detail.value
+  const [date] = event.detail.value.split("T")
+  selectedDate.value = `${date}T00:00:00`
   modal.value.$el.dismiss()
 }
 
