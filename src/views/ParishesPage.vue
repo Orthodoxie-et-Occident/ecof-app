@@ -17,7 +17,7 @@
           >
         </ion-list-header>
         <ion-list>
-          <ion-item button v-for="p in paroisses" :key="p.id" @click="showEvents(p.id, p.nom)">
+          <ion-item button detail v-for="p in paroisses" :key="p.id" @click="showEvents(p.id, p.nom)">
             <ion-thumbnail slot="start">
               <img :src="p.img" :alt="p.nom" />
             </ion-thumbnail>
@@ -25,7 +25,6 @@
               <h2>{{ p.nom }}</h2>
               <p>{{ p.ville }}</p>
             </ion-label>
-            <ion-icon :icon="chevronForward" slot="end"></ion-icon>
           </ion-item>
         </ion-list>
       </template>
@@ -35,8 +34,7 @@
 
 <script setup>
 import { useRouter } from "vue-router"
-import { IonPage, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonContent, IonList, IonListHeader, IonItem, IonThumbnail, IonLabel, IonIcon } from "@ionic/vue"
-import { chevronForward } from "ionicons/icons"
+import { IonPage, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonContent, IonList, IonListHeader, IonItem, IonThumbnail, IonLabel } from "@ionic/vue"
 
 import bordeauxImg from "@/assets/img/parishes/bordeaux.png"
 import montpellierImg from "@/assets/img/parishes/montpellier.png"
