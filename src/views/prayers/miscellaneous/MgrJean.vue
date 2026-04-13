@@ -25,7 +25,7 @@
                 sensibles et vos oreilles à tous les bruits de la terre pour entrer en vous-même, là, dans le sanctuaire de votre âme qui est le temple du Saint-Esprit en lui disant :
               </p>
               <p>
-                «&nbsp;Ô Saint Esprit, âme de mon âme, je T'adore, éclaire-moi, guide- moi, fortifie-moi, console-moi&nbsp;; dis-moi ce que je dois faire, donne- moi tes ordres. Je te promets de me
+                «&nbsp;Ô Saint Esprit, âme de mon âme, je T'adore, éclaire-moi, guide- moi, fortifie-moi, console-moi&nbsp;; dis-moi ce que je dois faire, donne-moi tes ordres. Je te promets de me
                 soumettre à tout ce que Tu désires de moi et d'accepter tout ce que Tu permets qu'il m'arrive. Fais-moi seulement connaître Ta volonté.&nbsp;»
               </p>
               <p>
