@@ -46,7 +46,6 @@
 import { ref } from "vue"
 import { IonPage, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonContent, onIonViewWillEnter } from "@ionic/vue"
 import maplibregl from "maplibre-gl"
-import { Protocol } from "pmtiles"
 import { layers, namedFlavor } from "@protomaps/basemaps"
 
 // ─── Config fonds de carte ───────────────────────────────────────────────────
@@ -58,7 +57,7 @@ function buildStyle() {
     sources: {
       protomaps: {
         type: "vector",
-        url: "pmtiles://https://pmtiles-worker.raoult-jacques.workers.dev/europe_ouest.pmtiles",
+        url: "https://tiles.ecof.app/europe_ouest.json",
         attribution: '<a href="https://protomaps.com">Protomaps</a> © <a href="https://openstreetmap.org">OpenStreetMap</a>',
       },
     },
@@ -169,8 +168,6 @@ onIonViewWillEnter(() => {
     map.resize()
     return
   }
-
-  maplibregl.addProtocol("pmtiles", new Protocol().tile)
 
   map = new maplibregl.Map({
     container: mapContainer.value,

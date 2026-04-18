@@ -27,7 +27,6 @@
     "@protomaps/basemaps": "^5.7.2",
     "ionicons": "^8.0.13",
     "maplibre-gl": "^5.23.0",
-    "pmtiles": "^4.4.1",
     "vue": "^3.5.32",
     "vue-router": "^5.0.4"
   },
