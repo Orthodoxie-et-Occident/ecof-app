@@ -3,7 +3,7 @@
     <ion-header>
       <ion-toolbar color="primary">
         <ion-buttons slot="start">
-          <ion-back-button text="" default-href="/articles"></ion-back-button>
+          <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>Articles</ion-title>
       </ion-toolbar>
@@ -26,10 +26,10 @@
             <h2>{{ article.title }}</h2>
 
             <!-- AUTEUR + DATE -->
-            <p>👤 {{ article.author }} • 📅 {{ formatDate(article.published_at) }}</p>
+            <p>{{ article.author }} • {{ formatDate(article.published_at) }}</p>
 
             <!-- SLUG (pastille) -->
-            <ion-badge color="medium">
+            <ion-badge color="primary">
               {{ article.slug }}
             </ion-badge>
           </ion-label>
