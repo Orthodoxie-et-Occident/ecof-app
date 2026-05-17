@@ -30,7 +30,7 @@
               >{{ poi.adress }}<template v-if="poi.adress2 && poi.adress2 !== 'null'">, {{ poi.adress2 }}</template></span
             >
             <span>{{ poi.postcode }} {{ poi.city }}</span>
-            <a v-if="poi.website && poi.website !== 'null'" :href="poi.website" target="_system">Visiter le site →</a>
+            <a v-if="poi.website && poi.website !== 'null'" :href="poi.website" :class="poi.diocese === '1' ? 'link-gold' : 'link-purple'" target="_system">Visiter le site →</a>
           </div>
         </div>
         <button class="close" @click="poi = null">✕</button>
@@ -271,9 +271,14 @@ onIonViewWillLeave(() => {
 }
 .info a {
   margin-top: 6px;
-  color: #6b4ea3;
   font-weight: 600;
   text-decoration: none;
+}
+.link-gold {
+  color: #a88b2a;
+}
+.link-purple {
+  color: #6b4ea3;
 }
 
 .close {
