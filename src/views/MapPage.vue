@@ -195,13 +195,13 @@ onIonViewWillLeave(() => {
 .map {
   position: absolute;
   inset: 0;
-  top: calc(56px + var(--ion-safe-area-top, 0px));
+  top: 56px;
 }
 
 /* ── Légende ── */
 .legend {
   position: absolute;
-  top: calc(56px + var(--ion-safe-area-top, 0px) + 12px);
+  top: 68px;
   right: 12px;
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(6px);
