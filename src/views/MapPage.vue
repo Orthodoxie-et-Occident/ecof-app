@@ -12,7 +12,6 @@
     <ion-content :scroll-y="false">
       <div ref="mapEl" class="map" />
 
-      <!-- Légende avec PNG -->
       <div class="legend">
         <div v-for="d in DIOCESES" :key="d.id" class="legend-item">
           <img :src="d.img" class="legend-pin" />
@@ -20,14 +19,15 @@
         </div>
       </div>
 
-      <!-- Fiche POI -->
       <transition name="slide">
         <div v-if="poi" class="card">
           <div class="card-body">
             <img :src="getDioceseImg(poi.diocese)" class="card-pin" />
             <div class="info">
               <strong>{{ poi.name }}</strong>
-              <span>{{ poi.adress }}<template v-if="poi.adress2 && poi.adress2 !== 'null'">, {{ poi.adress2 }}</template></span>
+              <span
+                >{{ poi.adress }}<template v-if="poi.adress2 && poi.adress2 !== 'null'">, {{ poi.adress2 }}</template></span
+              >
               <span>{{ poi.postcode }} {{ poi.city }}</span>
               <a v-if="poi.website && poi.website !== 'null'" :href="poi.website" :class="poi.diocese === '1' ? 'link-gold' : 'link-purple'" target="_system">Visiter le site →</a>
             </div>
@@ -196,7 +196,6 @@ onIonViewWillLeave(() => {
   inset: 0;
 }
 
-/* ── Légende ── */
 .legend {
   position: absolute;
   top: 12px;
@@ -226,7 +225,6 @@ onIonViewWillLeave(() => {
   flex-shrink: 0;
 }
 
-/* ── Carte POI ── */
 .card {
   position: absolute;
   bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
@@ -292,7 +290,6 @@ onIonViewWillLeave(() => {
   justify-content: center;
 }
 
-/* ── Animation ── */
 .slide-enter-active,
 .slide-leave-active {
   transition: all 0.2s ease;

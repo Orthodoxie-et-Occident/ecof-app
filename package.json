@@ -1,6 +1,6 @@
 {
   "name": "ecof",
-  "version": "3.4.3",
+  "version": "3.4.4",
   "private": true,
   "description": "ECOF Application",
   "type": "module",
