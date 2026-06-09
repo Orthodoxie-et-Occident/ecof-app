@@ -65,6 +65,13 @@ ion-card {
 
 ion-card-content {
   line-height: 1.6;
+  font-size: 16px;
+}
+
+ion-card-content p,
+ion-card-content li {
+  font-size: 16px;
+  margin-bottom: 8px;
 }
 
 ion-card-content p {
@@ -75,11 +82,6 @@ ion-card-content ul,
 ion-card-content ol {
   padding-left: 20px;
   margin-top: 8px;
-}
-
-ion-card-content li {
-  margin-bottom: 8px;
-  font-size: inherit;
 }
 
 a {
