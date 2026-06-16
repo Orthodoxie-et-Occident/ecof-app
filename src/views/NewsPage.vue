@@ -76,8 +76,8 @@ h2 {
   font-weight: 600;
   margin-bottom: 4px;
   white-space: nowrap;
-  overflow-x: auto;
-  scrollbar-width: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 h2::-webkit-scrollbar {
   display: none;
