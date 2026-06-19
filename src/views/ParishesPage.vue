@@ -85,15 +85,30 @@ ion-list-header {
   padding-top: 20px;
 }
 
+ion-item {
+  --min-height: 88px;
+  align-items: center;
+}
+
 ion-thumbnail {
   --size: 80px;
   --border-radius: 5px;
+  align-self: center;
 }
 
 ion-thumbnail img {
   max-height: 100%;
   max-width: 100%;
   object-fit: contain;
+}
+
+ion-label h2 {
+  font-size: 15px;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 ion-list-header h2 {
