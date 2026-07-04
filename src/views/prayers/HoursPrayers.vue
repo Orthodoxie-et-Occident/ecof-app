@@ -107,7 +107,7 @@ const debutEnCours = computed(() => tousSlots[indexEnCours.value]?.debut ?? null
 const slotsAffiches = computed(() => {
   const idx = indexEnCours.value
   const start = Math.max(0, idx - 2)
-  return tousSlots.slice(start, start + 6)
+  return tousSlots.slice(start, start + 8)
 })
 
 const nbPasses = computed(() => 2)
