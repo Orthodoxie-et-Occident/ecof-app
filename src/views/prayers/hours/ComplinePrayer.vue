@@ -10,34 +10,48 @@
     </ion-header>
 
     <ion-content class="ion-padding">
-      <div class="state-container">
-        <ion-icon :icon="documentTextOutline" class="state-icon" />
-        <p>Office non disponible</p>
-      </div>
+      <h1 class="office-titre">{{ titreOffice }}</h1>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup>
-import { IonPage, IonHeader, IonButtons, IonBackButton, IonToolbar, IonTitle, IonContent, IonIcon } from "@ionic/vue"
+import { computed } from "vue"
+import { useRoute } from "vue-router"
+import { IonPage, IonHeader, IonButtons, IonBackButton, IonToolbar, IonTitle, IonContent } from "@ionic/vue"
 
-import { documentTextOutline } from "ionicons/icons"
+const JOURS = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"]
+
+const route = useRoute()
+
+// Parse "YYYY-MM-DD" en date locale (évite le décalage UTC de new Date("YYYY-MM-DD"))
+function parseISO(str) {
+  const [y, m, d] = str.split("-").map(Number)
+  return new Date(y, m - 1, d)
+}
+
+const jourSoir = computed(() => {
+  return route.query.date ? parseISO(route.query.date) : new Date()
+})
+
+const jourLiturgique = computed(() => {
+  const d = new Date(jourSoir.value)
+  d.setDate(d.getDate() + 1)
+  return d
+})
+
+const titreOffice = computed(() => {
+  const nomLiturgique = JOURS[jourLiturgique.value.getDay()]
+  const nomSoir = JOURS[jourSoir.value.getDay()]
+  return `Office de Complies du ${nomLiturgique} (célébré le ${nomSoir} soir)`
+})
 </script>
 
 <style scoped>
-.state-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
+.office-titre {
+  font-size: 17px;
+  font-weight: 600;
   text-align: center;
-  gap: 12px;
-  color: #888;
-}
-
-.state-icon {
-  font-size: 64px;
-  opacity: 0.3;
+  margin: 16px 0 4px;
 }
 </style>

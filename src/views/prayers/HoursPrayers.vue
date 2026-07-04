@@ -30,11 +30,8 @@
             <div class="content-col">
               <div
                 class="prayer-block"
-                :class="{
-                  active: i === nbPasses,
-                  disabled: slot.disabled,
-                }"
-                @click="!slot.disabled && $router.push(slot.route)"
+                :class="{ active: i === nbPasses, disabled: slot.disabled }"
+                @click="!slot.disabled && $router.push({ path: slot.route, query: { date: fmtISO(slot.dateObj) } })"
               >
                 <div class="prayer-inner">
                   <div class="prayer-titre">
@@ -63,6 +60,13 @@ const MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", 
 
 function fmtDate(d) {
   return `${JOURS[d.getDay()]} ${d.getDate()} ${MOIS[d.getMonth()]}`
+}
+
+function fmtISO(d) {
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, "0")
+  const day = String(d.getDate()).padStart(2, "0")
+  return `${y}-${m}-${day}`
 }
 
 const maintenant = new Date()
