@@ -7,54 +7,70 @@
         </ion-buttons>
         <ion-title>Office des Heures</ion-title>
       </ion-toolbar>
+
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button :disabled="!peutReculer" @click="jourPrecedent">
+            <ion-icon slot="icon-only" :icon="chevronBack"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title size="small">{{ libelleJour }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button :disabled="!peutAvancer" @click="jourSuivant">
+            <ion-icon slot="icon-only" :icon="chevronForward"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
     </ion-header>
 
-    <ion-content>
-      <div class="timeline">
-        <template v-for="(slot, i) in slotsAffiches" :key="slot.uid">
-          <div class="scale" :class="{ 'scale-active': i === nbPasses }">
-            <div class="ruler">
-              <div class="ruler-inner">
-                <div v-for="offset in [0, 1, 2]" :key="offset" v-show="!(i === 0 && offset === 0)" class="r-tick" :style="{ top: offset * 36 + 'px' }">
-                  <span class="r-label" :class="{ major: offset === 0 }"> {{ (slot.debut + offset) % 24 }}h </span>
-                  <span class="r-dash" :class="offset === 0 ? 'major' : 'minor'"></span>
-                </div>
-              </div>
-            </div>
-
-            <div class="content-col">
-              <div
-                class="prayer-block"
-                :class="{ active: i === nbPasses, disabled: slot.disabled }"
-                @click="!slot.disabled && $router.push({ path: slot.route, query: { date: fmtISO(slot.dateObj) } })"
-              >
-                <div class="prayer-inner">
-                  <div class="prayer-titre">
-                    <span v-if="i === nbPasses" class="cur-dot" aria-label="En cours" />
-                    {{ slot.titre }}
-                  </div>
-                  <div class="prayer-sous">{{ slot.sous }}</div>
-                </div>
-                <span class="day-badge">{{ fmtBadge(slot.dateObj) }}</span>
-                <ion-icon :icon="chevronForward" class="chevron-nav" aria-hidden="true" />
-              </div>
-            </div>
-          </div>
-        </template>
-      </div>
+    <ion-content class="ion-padding">
+      <ion-list>
+        <ion-item
+          button
+          v-for="office in OFFICES"
+          :key="office.heure"
+          :router-link="{ path: office.route, query: { date: fmtISO(jourAffiche) } }"
+          router-direction="forward"
+          :color="officeEnCours && officeEnCours.heure === office.heure ? 'light' : undefined"
+          detail
+        >
+          <ion-label>
+            <h2>{{ office.titre }}</h2>
+            <p>{{ office.sous }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup>
-import { computed } from "vue"
-import { IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonIcon } from "@ionic/vue"
-import { chevronForward } from "ionicons/icons"
+import { computed, ref } from "vue"
+import { IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonList, IonItem, IonLabel, IonIcon, IonButton } from "@ionic/vue"
+import { chevronBack, chevronForward } from "ionicons/icons"
 
-const JOURS_COURT = ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"]
+const OFFICES = [
+  { heure: 0, titre: "Nocturnes", sous: "A la 6ème heure de la nuit (environ minuit)", route: "/prayers/hours/vigils" },
+  { heure: 3, titre: "Laudes", sous: "Au lever du soleil, à la 9ème heure de la nuit (environ 3h)", route: "/prayers/hours/lauds" },
+  { heure: 6, titre: "Prime", sous: "A la 1ère heure du jour (environ 6h)", route: "/prayers/hours/prime" },
+  { heure: 9, titre: "Tierce", sous: "A la 3ème heure du jour (environ 9h)", route: "/prayers/hours/tierce" },
+  { heure: 12, titre: "Sexte", sous: "A la 6ème heure du jour (environ midi)", route: "/prayers/hours/sext" },
+  { heure: 15, titre: "None", sous: "A la 9ème heure du jour (environ 15h)", route: "/prayers/hours/none" },
+  { heure: 18, titre: "Vêpres", sous: "Au coucher du soleil (environ 18h)", route: "/prayers/hours/vespers" },
+  { heure: 21, titre: "Complies", sous: "A la 3ème heure de la nuit (environ 21h)", route: "/prayers/hours/compline" },
+]
 
-function fmtBadge(d) {
-  return `${JOURS_COURT[d.getDay()]} ${d.getDate()}`
+const JOURS = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"]
+const MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
+
+function capitalize(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
+function startOfDay(d) {
+  const x = new Date(d)
+  x.setHours(0, 0, 0, 0)
+  return x
 }
 
 function fmtISO(d) {
@@ -64,198 +80,58 @@ function fmtISO(d) {
   return `${y}-${m}-${day}`
 }
 
-const maintenant = new Date()
-
-const OFFICES = [
-  { debut: 18, titre: "Vêpres", sous: "Au coucher du soleil (environ 18h)", route: "/prayers/hours/vespers", disabled: false },
-  { debut: 21, titre: "Complies", sous: "A la 3ème heure de la nuit (environ 21h)", route: "/prayers/hours/compline", disabled: false },
-  { debut: 0, titre: "Nocturnes", sous: "A la 6ème heure de la nuit (environ minuit)", route: "/prayers/hours/vigils", disabled: false },
-  { debut: 3, titre: "Laudes", sous: "Au lever du soleil, à la 9ème heure de la nuit (environ 3h)", route: "/prayers/hours/lauds", disabled: false },
-  { debut: 6, titre: "Prime", sous: "A la 1ère heure du jour (environ 6h)", route: "/prayers/hours/prime", disabled: false },
-  { debut: 9, titre: "Tierce", sous: "A la 3ème heure du jour (environ 9h)", route: "/prayers/hours/tierce", disabled: false },
-  { debut: 12, titre: "Sexte", sous: "A la 6ème heure du jour (environ midi)", route: "/prayers/hours/sext", disabled: false },
-  { debut: 15, titre: "None", sous: "A la 9ème heure du jour (environ 15h)", route: "/prayers/hours/none", disabled: false },
-]
-
-function buildSlots(nbCycles = 3) {
-  const result = []
-  const h = maintenant.getHours()
-  const base = new Date(maintenant)
-  if (h < 18) base.setDate(base.getDate() - 1)
-
-  for (let cycle = -1; cycle < nbCycles; cycle++) {
-    OFFICES.forEach((o) => {
-      const decalage = o.debut < 18 ? cycle + 1 : cycle
-      const date = new Date(base)
-      date.setDate(date.getDate() + decalage)
-      result.push({ ...o, cycle, dateObj: date, uid: `${cycle}-${o.debut}` })
-    })
-  }
-  return result
+function estAujourdhui(d) {
+  return startOfDay(d).getTime() === startOfDay(new Date()).getTime()
 }
 
-const tousSlots = buildSlots(3)
+// ── Navigation jour précédent / suivant, bornée à -1 / +1 ──
+const aujourdhui = startOfDay(new Date())
 
-const indexEnCours = computed(() => {
+const bordureMin = (() => {
+  const d = new Date(aujourdhui)
+  d.setDate(d.getDate() - 1)
+  return d
+})()
+
+const bordureMax = (() => {
+  const d = new Date(aujourdhui)
+  d.setDate(d.getDate() + 1)
+  return d
+})()
+
+const jourAffiche = ref(new Date(aujourdhui))
+
+const peutReculer = computed(() => jourAffiche.value.getTime() > bordureMin.getTime())
+const peutAvancer = computed(() => jourAffiche.value.getTime() < bordureMax.getTime())
+
+function jourPrecedent() {
+  if (!peutReculer.value) return
+  const d = new Date(jourAffiche.value)
+  d.setDate(d.getDate() - 1)
+  jourAffiche.value = d
+}
+
+function jourSuivant() {
+  if (!peutAvancer.value) return
+  const d = new Date(jourAffiche.value)
+  d.setDate(d.getDate() + 1)
+  jourAffiche.value = d
+}
+
+const libelleJour = computed(() => {
+  const d = jourAffiche.value
+  if (estAujourdhui(d)) return "Aujourd'hui"
+  return `${capitalize(JOURS[d.getDay()])} ${d.getDate()} ${MOIS[d.getMonth()]}`
+})
+
+// ── Office en cours (uniquement si on regarde aujourd'hui) ──
+const officeEnCours = computed(() => {
+  if (!estAujourdhui(jourAffiche.value)) return null
   const h = new Date().getHours()
-  const idx = tousSlots.findIndex((s) => s.cycle === 0 && h >= s.debut && h < s.debut + 3)
-  return idx >= 0 ? idx : tousSlots.findIndex((s) => s.cycle === 0)
+  let courant = OFFICES[0]
+  for (const o of OFFICES) {
+    if (h >= o.heure) courant = o
+  }
+  return courant
 })
-
-const debutEnCours = computed(() => tousSlots[indexEnCours.value]?.debut ?? null)
-
-const slotsAffiches = computed(() => {
-  const idx = indexEnCours.value
-  const start = Math.max(0, idx - 2)
-  return tousSlots.slice(start, start + 8)
-})
-
-const nbPasses = computed(() => 2)
 </script>
-
-<style scoped>
-.timeline {
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-/* ── Ligne scale ── */
-.scale {
-  display: flex;
-  border-bottom: 1.5px solid var(--ion-color-step-300);
-}
-
-/* ── Réglette ── */
-.ruler {
-  width: 52px;
-  flex-shrink: 0;
-  position: relative;
-  background: var(--ion-color-step-50);
-}
-
-.scale-active .ruler {
-  background: transparent;
-}
-
-.ruler-inner {
-  position: relative;
-  height: 108px;
-}
-
-.r-tick {
-  position: absolute;
-  right: 0;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 4px;
-  transform: translateY(-50%);
-}
-
-.r-label {
-  font-size: 11px;
-  font-variant-numeric: tabular-nums;
-  color: var(--ion-color-medium);
-  line-height: 1;
-}
-
-.r-label.major {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--ion-color-dark);
-}
-
-.r-dash {
-  flex-shrink: 0;
-  height: 1.5px;
-  border-radius: 1px;
-  background: var(--ion-color-step-300);
-}
-.r-dash.major {
-  width: 10px;
-  background: var(--ion-color-step-500);
-}
-.r-dash.minor {
-  width: 6px;
-}
-
-/* ── Contenu ── */
-.content-col {
-  flex: 1;
-  border-left: 1.5px solid var(--ion-color-step-200);
-}
-
-.prayer-block {
-  position: relative;
-  height: 108px;
-  display: flex;
-  align-items: flex-start;
-  padding-top: 14px;
-  cursor: pointer;
-  box-sizing: border-box;
-}
-
-.scale.scale-active {
-  background: color-mix(in srgb, var(--ion-color-primary) 16%, transparent);
-}
-
-.prayer-block.disabled {
-  cursor: default;
-  pointer-events: none;
-}
-
-.prayer-inner {
-  flex: 1;
-  padding: 0 8px 0 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.prayer-titre {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--ion-text-color);
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.cur-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--ion-color-primary);
-  flex-shrink: 0;
-}
-
-.prayer-sous {
-  font-size: 12px;
-  color: var(--ion-color-medium);
-}
-
-/* ── Badge jour/date ── */
-.day-badge {
-  position: absolute;
-  top: 10px;
-  right: 34px;
-  font-size: 10px;
-  font-weight: 500;
-  line-height: 1;
-  color: var(--ion-color-medium);
-  background: var(--ion-color-step-100);
-  border-radius: 6px;
-  padding: 3px 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-}
-
-.chevron-nav {
-  font-size: 16px;
-  color: var(--ion-color-medium);
-  margin-right: 12px;
-  margin-top: 10px;
-  flex-shrink: 0;
-}
-</style>
