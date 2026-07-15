@@ -22,7 +22,7 @@
                                 <layer>
                                     <note xml:id="v1note" pname="c" oct="5" dur="8">
                                         <verse n="1">
-                                            <syl>O</syl>
+                                            <syl>Ô</syl>
                                         </verse>
                                     </note>
                                 </layer>
@@ -56,7 +56,7 @@
                                 <layer>
                                     <note pname="c" oct="5" dur="8">
                                         <verse n="1">
-                                            <syl>a</syl>
+                                            <syl>à</syl>
                                         </verse>
                                     </note>
                                 </layer>
@@ -126,7 +126,7 @@
                                 <layer>
                                     <note pname="c" oct="5" dur="8">
                                         <verse n="1">
-                                            <syl>hâte</syl>
+                                            <syl>hâte Toi</syl>
                                         </verse>
                                     </note>
                                 </layer>
@@ -135,10 +135,9 @@
                         <measure metcon="false" right="invis">
                             <staff n="1">
                                 <layer>
-                                    <note pname="c" oct="5" dur="4" stem.visible="false"
-                                        head.shape="whole">
+                                    <note pname="c" oct="5" dur="breve" dur.ges="4">
                                         <verse n="1">
-                                            <syl>Toi de me</syl>
+                                            <syl>de me</syl>
                                         </verse>
                                     </note>
                                 </layer>
@@ -319,8 +318,7 @@
                         <measure metcon="false" right="invis">
                             <staff n="1">
                                 <layer>
-                                    <note pname="c" oct="5" dur="4" stem.visible="false"
-                                        head.shape="whole">
+                                    <note pname="c" oct="5" dur="breve" dur.ges="4">
                                         <verse n="1">
                                             <syl>commencement</syl>
                                         </verse>

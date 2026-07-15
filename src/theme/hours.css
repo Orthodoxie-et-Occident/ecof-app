@@ -46,3 +46,12 @@
 .hours.is-short .hide-on-short {
   display: none;
 }
+
+.saint-name {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--ion-color-primary, #333);
+  text-underline-offset: 3px;
+  font-weight: 500;
+}

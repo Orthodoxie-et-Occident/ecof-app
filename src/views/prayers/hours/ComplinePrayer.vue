@@ -129,7 +129,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue"
+import { ref, computed, watch } from "vue"
 import { useRoute } from "vue-router"
 import { IonPage, IonHeader, IonButtons, IonBackButton, IonToolbar, IonTitle, IonContent, IonToggle } from "@ionic/vue"
 import Score from "@/components/Score.vue"
@@ -138,7 +138,65 @@ import ouvertureMei from "@/assets/mei/ouverture.mei?raw"
 const withPriest = ref(false)
 const shortVersion = ref(false)
 
-const preparationWithPriest = `
+const JOURS = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"]
+
+const route = useRoute()
+
+function parseISO(str) {
+  const [y, m, d] = str.split("-").map(Number)
+  return new Date(y, m - 1, d)
+}
+
+function fmtISO(d) {
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, "0")
+  const day = String(d.getDate()).padStart(2, "0")
+  return `${y}-${m}-${day}`
+}
+
+const jourSoir = computed(() => {
+  return route.query.date ? parseISO(route.query.date) : new Date()
+})
+
+const jourLiturgique = computed(() => {
+  const d = new Date(jourSoir.value)
+  d.setDate(d.getDate() + 1)
+  return d
+})
+
+const jourLiturgiqueNom = computed(() => JOURS[jourLiturgique.value.getDay()])
+const jourSoirNom = computed(() => JOURS[jourSoir.value.getDay()])
+
+// ── Chargement des saints du jour liturgique ──
+const saints = ref([])
+
+async function loadSaints(dateISO) {
+  try {
+    const res = await fetch(`https://api.ecof.app/synaxar/${dateISO}`)
+    if (!res.ok) throw new Error("Erreur de chargement du synaxaire")
+    saints.value = await res.json()
+  } catch (err) {
+    console.error(err)
+    saints.value = []
+  }
+}
+
+const jourLiturgiqueISO = computed(() => fmtISO(jourLiturgique.value))
+
+watch(jourLiturgiqueISO, (dateISO) => loadSaints(dateISO), { immediate: true })
+
+// échapper le HTML pour éviter tout souci d'injection dans le v-html
+function escapeHtml(str) {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+}
+
+const saintsNamesHtml = computed(() => {
+  if (!saints.value.length) return "NN..."
+  return saints.value.map((s) => `<span class="saint-name">${escapeHtml(s.saint)}</span>`).join(", ")
+})
+
+const preparationWithPriest = computed(
+  () => `
 <p>Lecteur : Mon père, veuille me bénir.</p>
 <p>Prêtre : + Que le Dieu Tout-Puissant nous accorde une nuit tranquille et une fin heureuse.</p>
 <p>R : Amen.</p>
@@ -150,23 +208,25 @@ const preparationWithPriest = `
 <p>P : + Notre secours soit au nom du Seigneur,</p>
 <p>R : Qui a fait le ciel et la terre.</p>
 <p><em>Le prêtre, seul, profondément incliné :</em></p>
-<p>P : Je confesse devant la Face du Seigneur très clément, devant la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints NN..., tous les saints, et devant vous mes frères et soeurs, que j'ai beaucoup péché par pensées, par paroles, par actions, par omissions, consciemment et inconsciemment, volontairement et involontairement.</p>
+<p>P : Je confesse devant la Face du Seigneur très clément, devant la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints ${saintsNamesHtml.value}, tous les saints, et devant vous mes frères et soeurs, que j'ai beaucoup péché par pensées, par paroles, par actions, par omissions, consciemment et inconsciemment, volontairement et involontairement.</p>
 <p><em>Il se frappe trois fois la poitrine :</em></p>
-<p>Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur, selon Ta grande miséricorde ! C'est pourquoi je supplie la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints NN..., tous les saints et vous mes frères et soeurs, de prier pour moi le Seigneur notre Dieu.</p>
+<p>Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur, selon Ta grande miséricorde ! C'est pourquoi je supplie la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints ${saintsNamesHtml.value}, tous les saints et vous mes frères et soeurs, de prier pour moi le Seigneur notre Dieu.</p>
 <p>R : Que le Dieu Tout-Puissant aie pitié de toi, qu'Il te pardonne tes péchés et te conduise à la vie éternelle.</p>
 <p>P : Amen</p>
-<p>R : Je confesse devant la Face du Seigneur très clément, devant la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints NN..., tous les saints, et devant toi, mon père, que j'ai beaucoup péché par pensées, par paroles, par actions, par omissions, consciemment et inconsciemment, volontairement et involontairement.</p>
+<p>R : Je confesse devant la Face du Seigneur très clément, devant la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints ${saintsNamesHtml.value}, tous les saints, et devant toi, mon père, que j'ai beaucoup péché par pensées, par paroles, par actions, par omissions, consciemment et inconsciemment, volontairement et involontairement.</p>
 <p><em>On se frappe trois fois la poitrine :</em></p>
-<p>Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur, selon Ta grande miséricorde ! C'est pourquoi je supplie la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints NN..., tous les saints, et toi, mon père, de prier pour moi le Seigneur notre Dieu.</p>
+<p>Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur, selon Ta grande miséricorde ! C'est pourquoi je supplie la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints ${saintsNamesHtml.value}, tous les saints, et toi, mon père, de prier pour moi le Seigneur notre Dieu.</p>
 <p>P : Que le Dieu Tout-Puissant aie pitié de vous, qu'Il vous pardonne vos péchés et vous conduise à la vie éternelle.</p>
 <p>R : Amen.</p>
 <p>P : Que le Seigneur Tout-Puissant et Miséricordieux vous accorde le pardon, l'absolution et la rémission de vos péchés ; qu'Il vous absolve de vos fautes et renouvelle vos coeurs par l'effusion du Saint-Esprit. + Au nom du Père, du Fils et du Saint-Esprit.</p>
 <p>R : Amen.</p>
 <p>P : Convertis-nous, ô Dieu Qui es notre salut !</p>
 <p>R : Et détourne de nous Ta colère.</p>
-`
+`,
+)
 
-const preparationWithoutPriest = `
+const preparationWithoutPriest = computed(
+  () => `
 <p>Lecteur : Que le Dieu Tout-Puissant nous accorde une nuit tranquille et une fin heureuse.</p>
 <p>R : Amen.</p>
 <h3>Leçon brève</h3>
@@ -176,12 +236,14 @@ const preparationWithoutPriest = `
 <h3>Confession</h3>
 <p>V : + Notre secours soit au nom du Seigneur,</p>
 <p>R : Qui a fait le ciel et la terre.</p>
-<p>Tous : Je confesse devant la Face du Seigneur très clément, devant la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints NN..., tous les saints, et devant vous mes frères et soeurs, que j'ai beaucoup péché par pensées, par paroles, par actions, par omissions, consciemment et inconsciemment, volontairement et involontairement.</p>
+<p>Tous : Je confesse devant la Face du Seigneur très clément, devant la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints ${saintsNamesHtml.value}, tous les saints, et devant vous mes frères et soeurs, que j'ai beaucoup péché par pensées, par paroles, par actions, par omissions, consciemment et inconsciemment, volontairement et involontairement.</p>
 <p><em>On se frappe trois fois la poitrine :</em></p>
-<p>Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur, selon Ta grande miséricorde ! C'est pourquoi je supplie la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints NN..., tous les saints et vous mes frères et soeurs, de prier pour moi le Seigneur notre Dieu. Que le Dieu Tout-Puissant aie pitié de nous, qu'Il nous pardonne nos péchés et nous conduise à la vie éternelle. Amen.</p>
+<p>Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur, selon Ta grande miséricorde ! C'est pourquoi je supplie la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints ${saintsNamesHtml.value}, tous les saints et vous mes frères et soeurs, de prier pour moi le Seigneur notre Dieu. Que le Dieu Tout-Puissant aie pitié de nous, qu'Il nous pardonne nos péchés et nous conduise à la vie éternelle. Amen.</p>
 <p>V : Convertis-nous, ô Dieu Qui est notre salut !</p>
 <p>R : Et détourne de nous Ta colère.</p>
-`
+`,
+)
+
 const closingWithPriest = `
 <p>P : Le Seigneur soit toujours avec vous.</p>
 <p>R : Et avec ton esprit.</p>
@@ -215,26 +277,4 @@ const paterWithoutPriest = `
 <p>V : ... et ne nous soumets pas à l'épreuve.</p>
 <p>R : Mais délivre nous du malin. Amen.</p>
 `
-
-const JOURS = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"]
-
-const route = useRoute()
-
-function parseISO(str) {
-  const [y, m, d] = str.split("-").map(Number)
-  return new Date(y, m - 1, d)
-}
-
-const jourSoir = computed(() => {
-  return route.query.date ? parseISO(route.query.date) : new Date()
-})
-
-const jourLiturgique = computed(() => {
-  const d = new Date(jourSoir.value)
-  d.setDate(d.getDate() + 1)
-  return d
-})
-
-const jourLiturgiqueNom = computed(() => JOURS[jourLiturgique.value.getDay()])
-const jourSoirNom = computed(() => JOURS[jourSoir.value.getDay()])
 </script>
