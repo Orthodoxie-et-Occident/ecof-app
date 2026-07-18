@@ -51,11 +51,10 @@
           <!-- Vie brève -->
           <div v-if="selectedTab === 'vie_b'">
             <div v-if="saintData?.vie_b">
-              <MarkdownSection :html="saintData.vie_b" />
-
               <div v-if="saintData?.img" class="saint-image-container">
                 <img :src="saintData.img" :alt="`Icône de ${saintData.saint}`" class="saint-image" />
               </div>
+              <MarkdownSection :html="saintData.vie_b" />
             </div>
 
             <div v-else class="no-content">
