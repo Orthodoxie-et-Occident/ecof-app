@@ -5,7 +5,7 @@
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>Actualités</ion-title>
+        <ion-title>Annonces</ion-title>
       </ion-toolbar>
     </ion-header>
 
@@ -26,33 +26,62 @@
         </div>
       </div>
 
-      <ion-list v-else>
-        <ion-item v-for="article in articles" :key="article.id" button detail :router-link="`/news/${article.id}`" router-direction="forward">
-          <ion-label>
-            <h2 class="article-title">{{ article.title }}</h2>
-            <p>{{ article.author }} • {{ formatDate(article.published_at) }}</p>
+      <div v-else class="news-list">
+        <ion-card v-for="article in articles" :key="article.id" button :router-link="`/news/${article.id}`" router-direction="forward" class="news-card">
+          <ion-card-content>
+            <div class="card-body">
+              <div class="category-icon-wrap">
+                <ion-icon :icon="getCategoryIcon(article.slug_id)"></ion-icon>
+              </div>
 
-            <ion-badge class="slug-badge">
-              {{ article.slug }}
-            </ion-badge>
+              <div class="card-main">
+                <div class="badges-row">
+                  <ion-badge class="category-badge">
+                    {{ getCategoryLabel(article.slug_id) }}
+                  </ion-badge>
+                  <ion-badge class="new-badge" v-if="isNew(article.published_at)">Nouveau</ion-badge>
+                </div>
 
-            <ion-badge color="light" v-if="isNew(article.published_at)"> Nouveau </ion-badge>
-          </ion-label>
-        </ion-item>
-      </ion-list>
+                <h2 class="article-title">{{ article.title }}</h2>
+                <p class="article-meta">{{ article.author }} • {{ formatDate(article.published_at) }}</p>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup>
 import { ref } from "vue"
-import { IonPage, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonContent, IonList, IonItem, IonLabel, IonBadge, IonSpinner, IonButton, IonIcon, onIonViewWillEnter } from "@ionic/vue"
-import { cloudOfflineOutline, refreshOutline } from "ionicons/icons"
+import { IonPage, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonContent, IonCard, IonCardContent, IonBadge, IonSpinner, IonButton, IonIcon, onIonViewWillEnter } from "@ionic/vue"
+import { cloudOfflineOutline, refreshOutline, helpCircleOutline, documentTextOutline, calendarOutline, phonePortraitOutline } from "ionicons/icons"
 
 const articles = ref([])
 const loading = ref(true)
 const error = ref(null)
 const hasFetched = ref(false)
+
+// Mapping des catégories connues (slug renvoyé par l'API)
+const categoryMap = {
+  0: { label: "Général", icon: helpCircleOutline },
+  1: { label: "Homélie", icon: documentTextOutline },
+  2: { label: "Agenda", icon: calendarOutline },
+  3: { label: "Actus de l'appli", icon: phonePortraitOutline },
+}
+
+function getCategory(slug) {
+  return categoryMap[slug] ?? categoryMap[0]
+}
+
+function getCategoryIcon(slug) {
+  return getCategory(slug).icon
+}
+
+function getCategoryLabel(slug) {
+  return getCategory(slug).label
+}
 
 function formatDate(isoString) {
   return new Intl.DateTimeFormat("fr-FR", {
@@ -90,37 +119,90 @@ onIonViewWillEnter(() => {
 </script>
 
 <style scoped>
-ion-item {
-  --padding-start: 16px;
+.news-list {
+  padding: 12px 12px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-ion-label {
+.news-card {
+  margin: 0;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.news-card ion-card-content {
+  padding: 14px 16px;
+}
+
+.card-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.category-icon-wrap {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(var(--ion-color-primary-rgb), 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-icon-wrap ion-icon {
+  font-size: 20px;
+  color: var(--ion-color-primary-shade);
+}
+
+.card-main {
+  flex: 1;
   min-width: 0;
 }
 
-h2.article-title {
-  font-weight: 400;
-  margin-bottom: 4px;
-  max-width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+.badges-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
 }
 
-p {
+.category-badge {
+  --background: rgba(var(--ion-color-primary-rgb), 0.12);
+  --color: var(--ion-color-primary-shade);
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.new-badge {
+  --background: #fff2cc;
+  --color: #8a6d00;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.article-title {
+  font-size: 15px;
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--ion-color-dark, #1a1a1a);
+  margin: 0 0 4px;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.article-meta {
   margin: 0;
+  font-size: 0.85em;
   opacity: 0.7;
-  font-size: 0.9em;
-}
-
-ion-badge {
-  margin-top: 6px;
-  margin-right: 4px;
-}
-
-.slug-badge {
-  --background: var(--ion-color-primary-tint);
-  --color: var(--ion-color-primary-contrast);
 }
 
 .state-container {
