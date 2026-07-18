@@ -214,19 +214,19 @@ const preparationWithPriest = computed(
 <p><span class="rubric">R :</span>Amen.</p>
 <h3>Leçon brève</h3>
 <p><span class="rubric">V :</span> Mes frères, soyez sobres et vigilants, car votre adversaire le diable rôde autour de vous comme un lion rugissant, cherchant qui il pourra dévorer. Résistez-lui en étant forts dans la foi.</p>
-<p><em>Il s'incline :</em> Et Toi, Seigneur, aie pitié de moi.</p>
+<p><span class="rubric">Il s'incline :</span> Et Toi, Seigneur, aie pitié de moi.</p>
 <p><span class="rubric">R :</span>Rendons grâces à Dieu.</p>
 <h3>Confession</h3>
 <p><span class="rubric">P :</span> + Notre secours soit au nom du Seigneur,</p>
 <p><span class="rubric">R :</span> Qui a fait le ciel et la terre.</p>
-<p><em>Le prêtre, seul, profondément incliné :</em></p>
+<p><span class="rubric">Le prêtre, seul, profondément incliné :</span></p>
 <p><span class="rubric">P :</span> Je confesse devant la Face du Seigneur très clément, devant la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints ${saintsNamesHtml.value}, tous les saints, et devant vous mes frères et soeurs, que j'ai beaucoup péché par pensées, par paroles, par actions, par omissions, consciemment et inconsciemment, volontairement et involontairement.</p>
-<p><em>Il se frappe trois fois la poitrine :</em></p>
+<p><span class="rubric">Il se frappe trois fois la poitrine :</span></p>
 <p>Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur, selon Ta grande miséricorde ! C'est pourquoi je supplie la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints ${saintsNamesHtml.value}, tous les saints et vous mes frères et soeurs, de prier pour moi le Seigneur notre Dieu.</p>
 <p><span class="rubric">R :</span> Que le Dieu Tout-Puissant aie pitié de toi, qu'Il te pardonne tes péchés et te conduise à la vie éternelle.</p>
 <p><span class="rubric">P :</span> Amen</p>
 <p><span class="rubric">R :</span> Je confesse devant la Face du Seigneur très clément, devant la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints ${saintsNamesHtml.value}, tous les saints, et devant toi, mon père, que j'ai beaucoup péché par pensées, par paroles, par actions, par omissions, consciemment et inconsciemment, volontairement et involontairement.</p>
-<p><em>On se frappe trois fois la poitrine :</em></p>
+<p><span class="rubric">On se frappe trois fois la poitrine :</span></p>
 <p>Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur, selon Ta grande miséricorde ! C'est pourquoi je supplie la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints ${saintsNamesHtml.value}, tous les saints, et toi, mon père, de prier pour moi le Seigneur notre Dieu.</p>
 <p><span class="rubric">P :</span> Que le Dieu Tout-Puissant aie pitié de vous, qu'Il vous pardonne vos péchés et vous conduise à la vie éternelle.</p>
 <p><span class="rubric">R :</span> Amen.</p>
@@ -249,7 +249,7 @@ const preparationWithoutPriest = computed(
 <p><span class="rubric">V :</span> + Notre secours soit au nom du Seigneur,</p>
 <p><span class="rubric">R :</span> Qui a fait le ciel et la terre.</p>
 <p><span class="rubric">Tous :</span> Je confesse devant la Face du Seigneur très clément, devant la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints ${saintsNamesHtml.value}, tous les saints, et devant vous mes frères et soeurs, que j'ai beaucoup péché par pensées, par paroles, par actions, par omissions, consciemment et inconsciemment, volontairement et involontairement.</p>
-<p><em>On se frappe trois fois la poitrine :</em></p>
+<p><span class="rubric">On se frappe trois fois la poitrine :</span></p>
 <p>Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur. Aie pitié de moi, Seigneur, selon Ta grande miséricorde ! C'est pourquoi je supplie la bienheureuse Marie toujours Vierge, Mère de Dieu, saint Michel Archange, saint Jean-Baptiste, les saints Apôtres Pierre, Paul, Jean et Jacques, les saints ${saintsNamesHtml.value}, tous les saints et vous mes frères et soeurs, de prier pour moi le Seigneur notre Dieu. Que le Dieu Tout-Puissant aie pitié de nous, qu'Il nous pardonne nos péchés et nous conduise à la vie éternelle. Amen.</p>
 <p><span class="rubric">V :</span> Convertis-nous, ô Dieu Qui est notre salut !</p>
 <p><span class="rubric">R :</span> Et détourne de nous Ta colère.</p>
