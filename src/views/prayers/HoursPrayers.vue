@@ -9,24 +9,26 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content class="ion-padding">
-      <ion-list>
-        <ion-item
-          button
-          v-for="office in OFFICES"
-          :key="office.heure"
-          :router-link="{ path: office.route, query: { date: fmtISO(aujourdhui) } }"
-          router-direction="forward"
-          :color="officeEnCours && officeEnCours.heure === office.heure ? 'light' : undefined"
-          detail
-        >
-          <ion-label>
-            <h2>{{ office.titre }}</h2>
-            <p>{{ office.sous }}</p>
-            <p class="note-heure">{{ office.note }}</p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
+    <ion-content>
+      <div class="ion-padding">
+        <ion-list>
+          <ion-item
+            button
+            v-for="office in OFFICES"
+            :key="office.heure"
+            :router-link="{ path: office.route, query: { date: fmtISO(aujourdhui) } }"
+            router-direction="forward"
+            :color="officeEnCours && officeEnCours.heure === office.heure ? 'light' : undefined"
+            detail
+          >
+            <ion-label>
+              <h2>{{ office.titre }}</h2>
+              <p>{{ office.sous }}</p>
+              <p class="note-heure">{{ office.note }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </div>
     </ion-content>
   </ion-page>
 </template>

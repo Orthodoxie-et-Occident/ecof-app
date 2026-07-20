@@ -1,4 +1,3 @@
-```vue
 <template>
   <ion-page>
     <ion-header>
@@ -135,4 +134,3 @@ onIonViewWillEnter(fetchReadingData)
   color: var(--ion-color-dark);
 }
 </style>
-```
