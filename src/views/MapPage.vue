@@ -12,19 +12,13 @@
     <ion-content :scroll-y="false">
       <div ref="mapEl" class="map" />
 
-      <div class="legend">
-        <div v-for="d in DIOCESES" :key="d.id" class="legend-item">
-          <img :src="d.img" class="legend-pin" />
-          <span>{{ d.label }}</span>
-        </div>
-      </div>
-
       <transition name="slide">
         <div v-if="poi" class="card">
           <div class="card-body">
             <img :src="getDioceseImg(poi.diocese)" class="card-pin" />
             <div class="info">
               <strong>{{ poi.name }}</strong>
+              <span class="diocese-label" :class="poi.diocese === '1' ? 'link-gold' : 'link-purple'">{{ getDioceseLabel(poi.diocese) }}</span>
               <span
                 >{{ poi.adress }}<template v-if="poi.adress2 && poi.adress2 !== 'null'">, {{ poi.adress2 }}</template></span
               >
@@ -49,11 +43,12 @@ import markerDiocese1 from "@/assets/img/layout/pin1.png"
 import markerDiocese2 from "@/assets/img/layout/pin2.png"
 
 const DIOCESES = [
-  { id: "1", label: "Évêque Benoît de Pau", color: "#A88B2A", img: markerDiocese1, key: "m1" },
-  { id: "2", label: "Évêque Philippe de la Charité-sur-Loire", color: "#6B4EA3", img: markerDiocese2, key: "m2" },
+  { id: "1", label: "Diocèse de Mgr Benoît de Pau", color: "#A88B2A", img: markerDiocese1, key: "m1" },
+  { id: "2", label: "Diocèse de Mgr Philippe de la Charité-sur-Loire", color: "#6B4EA3", img: markerDiocese2, key: "m2" },
 ]
 
 const getDioceseImg = (id) => DIOCESES.find((d) => d.id === String(id))?.img ?? markerDiocese1
+const getDioceseLabel = (id) => DIOCESES.find((d) => d.id === String(id))?.label ?? ""
 
 const mapEl = ref(null)
 const poi = ref(null)
@@ -67,6 +62,7 @@ onIonViewDidEnter(async () => {
 
   mapInstance = new maplibregl.Map({
     container: mapEl.value,
+    attributionControl: false,
     style: {
       version: 8,
       glyphs: "https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf",
@@ -91,7 +87,9 @@ onIonViewDidEnter(async () => {
     pitchWithRotate: false,
   })
 
-  mapInstance.addControl(new maplibregl.NavigationControl({ showCompass: false }))
+  mapInstance.addControl(new maplibregl.AttributionControl({ compact: true }), "top-right")
+  mapInstance.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-left")
+
   mapInstance.dragRotate.disable()
   mapInstance.touchZoomRotate.disableRotation()
 
@@ -196,35 +194,6 @@ onIonViewWillLeave(() => {
   inset: 0;
 }
 
-.legend {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(6px);
-  border-radius: 10px;
-  padding: 8px 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  color: #374151;
-  z-index: 10;
-}
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.legend-pin {
-  width: 18px;
-  height: 18px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
 .card {
   position: absolute;
   bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
@@ -261,6 +230,11 @@ onIonViewWillLeave(() => {
   color: #111827;
   margin-bottom: 2px;
   line-height: 1.3;
+}
+.diocese-label {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
 }
 .info a {
   margin-top: 6px;

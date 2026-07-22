@@ -12,7 +12,7 @@
     <ion-content>
       <ion-card>
         <ion-card-header>
-          <ion-card-title>Sources</ion-card-title>
+          <ion-card-title>Ressources</ion-card-title>
         </ion-card-header>
         <ion-card-content>
           <p>
@@ -25,6 +25,23 @@
             <li><em>Bible Segond 1910</em>, en utilisant le vocable «&nbsp;le Seigneur&nbsp;» de préférence à «&nbsp;l'Éternel&nbsp;».</li>
             <li><em>Bible Crampon 1923</em>, pour certains livres de l'Ancien Testament absents des Bibles protestantes, en remplaçant le vouvoiement de Dieu par le tutoiement.</li>
           </ul>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Bibliothèques</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p>
+            Le rendu des partitions musicales de cette application s'appuie sur
+            <a href="https://www.verovio.org/" target="_blank">Verovio</a>, une bibliothèque open-source de gravure musicale développée par le
+            <a href="https://rism.digital/" target="_blank">RISM Digital Center</a>, distribuée sous <a href="https://www.gnu.org/licenses/lgpl-3.0.html" target="_blank">licence LGPL v3</a>.
+          </p>
+          <p>
+            Le code source de Verovio est disponible sur
+            <a href="https://github.com/rism-digital/verovio" target="_blank">GitHub</a>.
+          </p>
         </ion-card-content>
       </ion-card>
 
@@ -47,6 +64,8 @@
           <p>Pour toute question, suggestion ou contribution vous pouvez nous contacter à l'adresse <a href="mailto:contact@ecof.app">contact@ecof.app</a></p>
         </ion-card-content>
       </ion-card>
+
+      <p class="version">Version 3.5.3</p>
     </ion-content>
   </ion-page>
 </template>
@@ -88,5 +107,13 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+.version {
+  text-align: center;
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 4px;
+  margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
 }
 </style>

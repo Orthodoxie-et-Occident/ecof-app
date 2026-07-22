@@ -20,6 +20,9 @@ import "@ionic/vue/css/text-transformation.css"
 import "@ionic/vue/css/flex-utils.css"
 import "@ionic/vue/css/display.css"
 
+/* MapLibre GL CSS - requis pour l'affichage des contrôles (attribution, navigation, etc.) */
+import "maplibre-gl/dist/maplibre-gl.css"
+
 /* Theme variables */
 import "./theme/variables.css"
 import "./theme/fonts.css"
